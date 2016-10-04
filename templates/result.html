@@ -1,0 +1,10 @@
+<!doctype html>
+<title>Recognize result</title>
+<h1>Your picture is probably a photo of:</h1>
+
+{% for tag,score in results %}
+  <h3>{{ tag }} with probability: {{score}}</h3>
+{% endfor %}
+
+
+<a href="/">Try another one?</a>
