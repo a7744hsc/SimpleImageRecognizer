@@ -16,18 +16,15 @@ tf.app.flags.DEFINE_integer('num_top_predictions', 5,
                             """Display this many predictions.""")
 
 def inferenceImage(image):
-  """Runs inference on an image.
 
-  Args:
-    image: Image file name.
-
-  Returns:
-    Nothing
-  """
-  if not tf.gfile.Exists(image):
-    tf.logging.fatal('File does not exist %s', image)
-  image_data = tf.gfile.FastGFile(image, 'rb').read()
-  # print(image_data)
+  # input is binary file
+  if type(image) is bytes:
+    image_data= image
+  else: #the input is str
+    if not tf.gfile.Exists(image):
+      tf.logging.fatal('File does not exist %s', image)
+    image_data = tf.gfile.FastGFile(image, 'rb').read()
+    print('====Image opend by tf:',image_data[:32])
 
   # Creates graph from saved GraphDef.
   create_graph()

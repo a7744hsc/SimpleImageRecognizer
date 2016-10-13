@@ -11,11 +11,10 @@ def index():
 def upload():
     if request.method == 'POST':
         f=request.files['image']
-        f.save('temp.jpg')
-        results = ir.inferenceImage('temp.jpg')
-        print(type(f))
-        print(f)
-      # results += human_string+": %.3f" % (score+0.0005) +'<br>'
+        print('====Image type:',type(f))
+        binaryFile = f.read()
+        results = ir.inferenceImage(binaryFile)
+        
         return render_template('result.html',results = results)
 
 @app.route('/post/<int:post_id>')
