@@ -1,9 +1,9 @@
 from flask import Flask,url_for,render_template,request
 from tfwrapper import imageRecognizer as ir
-app = Flask(__name__)
+app = Flask(__name__,static_url_path='')
 
 @app.route("/")
-@app.route("/index.html")
+# @app.route("/index.html")
 def index():
     return render_template('index.html')
 
