@@ -20,3 +20,4 @@ A simple image recognize web based on Flask and Tesnsorflow. This project is wri
 - [ ] refine imageRcognizer(By now, most code in this file are copied from tf example).
 - [ ] use my own model.
 - [ ] use my own model.
+- [ ] use tensorflow-serving to improve performance.
