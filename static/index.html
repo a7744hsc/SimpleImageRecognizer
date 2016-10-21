@@ -31,10 +31,12 @@
             font-size: 24px;
             color: #fff;
         }
+        
         a {
-            color:aliceblue;
+            color: aliceblue;
         }
-        #introduction{
+        
+        #introduction {
             padding-top: 30px;
             padding-left: 30px;
             text-align: left;
@@ -44,11 +46,17 @@
             font-size: 20px;
             color: #fff;
         }
-        #second{
+        
+        #second {
             text-align: center;
         }
-        #imageContainer{
+        
+        #imageContainer {
             padding: 30px 30px 30px 30px;
+        }
+        
+        .imageBorder {
+            border-style: 5px solid black;
         }
     </style>
 </head>
@@ -69,12 +77,16 @@
             <p>Choose a picture from anywhere, I can tell you what in the picture!</p>
             <p id="second">Click choose the file to begin.</p>
         </div>
+
+
         <div id="imageContainer">
-            <input type="file" id="file">
-            <div id="image-wrap"></div>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" id="file">
+                <div id="image-wrap"></div>
+            </form>
         </div>
-        <input type="file" id="file">
-        <div id="image-wrap"></div>
+        <input type="submit" value="Submit" class="btn btn-primary" />
+
     </div>
 
     <script src="js/jquery-3.1.1.min.js"></script>

@@ -21,9 +21,11 @@
                 reader.onload = function () {
                     var img = new Image();
                     img.src = reader.result;
+                    $(img).css("border","20px solid #008272");
                     $(img).width(opts.width);
                     $(img).height(opts.height);
                     $(opts.wrapSelector).empty();
+                    $(opts.wrapSelector).append("<br>");
                     $(opts.wrapSelector).append(img);
                 };
                 reader.readAsDataURL(file);
