@@ -4,3 +4,4 @@ temp.jpg
 *.pyc
 *.pyo
 .idea/*
+tfmodel/dataset/*
