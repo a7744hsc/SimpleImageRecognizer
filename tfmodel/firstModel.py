@@ -2,11 +2,14 @@ import random
 
 import numpy as np
 import tensorflow as tf
-
 import preprocess
+from tensorflow.python.framework.graph_util import convert_variables_to_constants
+
+# from tensorflow.contrib.session_bundle import exporter
+# from tensorflow_serving.example import mnist_input_data
 
 batch_size = 100
-IMAGE_WIDTH = 100
+IMAGE_WIDTH = 227
 IMAGE_PIXELS = IMAGE_WIDTH * IMAGE_WIDTH * 3
 CLASSES = 2
 
@@ -26,7 +29,7 @@ def train():
 # ##############################################alexNet###########################################
 def inference(images):  # image batchsize*227*227*3
 
-    parameters = []
+
 
     # Layer 1
     with tf.name_scope('layer1'):
@@ -36,7 +39,7 @@ def inference(images):  # image batchsize*227*227*3
         bias = tf.Variable(tf.zeros([64], dtype=tf.float32))
         biased = tf.nn.bias_add(conv, bias)
         relu_o = tf.nn.relu(biased, name='relu')
-        parameters += [kernel, bias]
+
         print_activations(relu_o)
         # MAX_POOL
         layer1_output = tf.nn.max_pool(relu_o,
@@ -59,7 +62,7 @@ def inference(images):  # image batchsize*227*227*3
                            trainable=True, name='bias')
         biased = tf.nn.bias_add(conv, bias)
         relu_o = tf.nn.relu(biased, name='relu')
-        parameters += [kernel, bias]
+
         print_activations(relu_o)
         # LRN
         # (TODO) add a Local Response Normalization here
@@ -83,7 +86,7 @@ def inference(images):  # image batchsize*227*227*3
                            trainable=True, name='biases')
         biased = tf.nn.bias_add(conv, bias)
         layer3_output = tf.nn.relu(biased, name='relu')
-        parameters += [kernel, bias]
+
         print_activations(layer3_output)
 
     # layer4
@@ -97,7 +100,7 @@ def inference(images):  # image batchsize*227*227*3
                            trainable=True, name='biases')
         biased = tf.nn.bias_add(conv, bias)
         layer4_output = tf.nn.relu(biased, name='relu')
-        parameters += [kernel, bias]
+
         print_activations(layer4_output)
 
     # layer5
@@ -111,7 +114,7 @@ def inference(images):  # image batchsize*227*227*3
                            trainable=True, name='biases')
         biased = tf.nn.bias_add(conv, bias)
         layer4_output = tf.nn.relu(biased, name='relu')
-        parameters += [kernel, bias]
+
         print_activations(layer4_output)
 
         # max pool5
@@ -140,7 +143,7 @@ def inference(images):  # image batchsize*227*227*3
         # print('layer7_o: ',layer7_output.eval())
 
     with tf.name_scope('layer8'):
-        fc8W = tf.Variable(tf.truncated_normal((4096, CLASSES), dtype=tf.float32), name='Weights')
+        fc8W = tf.Variable(tf.truncated_normal((4096, CLASSES), dtype=tf.float32, mean=0.1), name='Weights')
         fc8b = tf.Variable(tf.truncated_normal([CLASSES], dtype=tf.float32), name='Weights')
         layer8_output = tf.nn.relu_layer(layer7_output, fc8W, fc8b, name='relu_layer')
         print_activations(layer8_output)
@@ -149,7 +152,7 @@ def inference(images):  # image batchsize*227*227*3
         # print('layer8_o: ',layer8_output.eval())
 
     # sm_output = tf.nn.softmax(layer8_output, name='soft_max')
-    return layer8_output, parameters
+    return layer8_output, (layer7_output,layer6_output,layer5_output,layer4_output,layer3_output,layer2_output, layer1_output,fc8W)
 
 
 def loss(logits, labels):
@@ -159,19 +162,20 @@ def loss(logits, labels):
     cross_entropy_mean = tf.reduce_mean(cross_entropy, name='cross_entropy_mean')
     return cross_entropy_mean
 
-def train(total_loss):
+def train(total_loss,lr = 0.001):
     # get data
     # for loop
     # export model
-    op = tf.train.GradientDescentOptimizer(learning_rate=0.01).minimize(total_loss)
+    op = tf.train.GradientDescentOptimizer(learning_rate=lr).minimize(total_loss)
     return op
 
 def print_activations(t):
     print(t.op.name, ' ', t.get_shape().as_list())
+    pass
 
 def main():
     batch_size = 100
-    steps = 100
+    steps = 1
     sess = tf.Session()
     with sess.as_default():
         train_data, train_label = preprocess.load_train_set()
@@ -179,21 +183,47 @@ def main():
 
         image_placeholder = tf.placeholder(dtype=tf.float32,shape=(batch_size,227,227,3))
         label_placeholder = tf.placeholder(dtype=tf.int8,shape=(batch_size))
-        logits, para = inference(image_placeholder)
+        logits, l7654321 = inference(image_placeholder)
+        layer7_t,layer6_t,layer5_t,layer4_t,layer3_t,layer2_t,layer1_t,fc8W_t = l7654321
         total_loss = loss(logits, label_placeholder)
-        train_op = train(total_loss)
+        train_op = train(total_loss,lr=0.0000001)
         tf.initialize_all_variables().run()
 
         for i in range(steps):
             start_position = random.randrange(len(train_label)-batch_size)
-            _, loss_value, logits_value = sess.run([train_op, total_loss, logits],
+            softmax = tf.nn.softmax(logits)
+
+            _, loss_value, logits_value, softmax_value, l7_output,l6_output,l5_output,l1_output, fc8w = \
+                sess.run([train_op, total_loss, logits, softmax, layer7_t, layer6_t, layer5_t, layer1_t, fc8W_t],
                                      feed_dict={image_placeholder: train_data[start_position:start_position+batch_size],
                                                 label_placeholder: train_label[start_position:start_position+batch_size]})
             result = np.argmax(logits_value, axis=1)
-            print('result:',result)
+
+            # print('l1_output:',l1_output)
+            # print('l2_output:',l7654321[5])
+            # print('l3_output:',l7654321[4])
+            # print('l4_output:',l7654321[3])
+            # print('l5_output:',l5_output)
+            # print('l6_output:',l6_output)
+            # np.savetxt('l6.txt',l6_output)
+            print('l7_output:',l7_output)
+            print('FC8W: ',     fc8w)
+            print('logits:',logits_value)
+            print('result',result)
             print('lables',train_label[start_position:start_position+batch_size])
             print('accuracy:',np.sum(result==train_label[start_position:start_position+batch_size]))
             print('total loss:', loss_value)
+
+        # save model to file.
+        # gd = tf.get_default_graph().as_graph_def()
+        # saver = tf.train.Saver({"my-test-variable": fc8W_t})
+        # saver.save(sess,'temp.ckpt')
+        tf.train.write_graph(sess.graph_def, '', 'graph_pb', as_text=True)
+        # print(sess.graph_def)
+        minimal_graph = convert_variables_to_constants(sess, sess.graph_def, ["layer8/relu_layer"])
+
+        tf.train.write_graph(minimal_graph, '.', 'minimal_graph.proto', as_text=False)
+        tf.train.write_graph(minimal_graph, '.', 'minimal_graph.txt', as_text=True)
 
 '''
 ############################# Save variables to file
