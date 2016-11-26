@@ -1,4 +1,7 @@
 tfwrapper/models/*
+static/*
 *.pyc
 *.pyo
 .idea/*
+tfmodel/dataset/*
+test*
