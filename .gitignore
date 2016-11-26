@@ -1,6 +1,4 @@
 tfwrapper/models/*
-static/*
-temp.jpg
 *.pyc
 *.pyo
 .idea/*

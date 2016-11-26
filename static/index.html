@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="this is the first website we set, for people to unload their personal pictures and we can tell them what are in the picture">
+    <meta name="author" content="Abner & Cynthia">
+
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/nivo-lightbox.css" rel="stylesheet" />
+    <link href="css/nivo-lightbox-theme/default/default.css" rel="stylesheet" type="text/css" />
+    <link href="css/animate.css" rel="stylesheet" />
+    <link href="css/default.css" rel="stylesheet">
+    <style type="text/css">
+        #preview {
+            width: 100px;
+            height: 100px;
+        }
+        
+        #header #headertext {
+            padding-left: 15px;
+            text-align: left;
+            line-height: 75px;
+            height: 75px;
+            background-color: #008272;
+            font-size: 24px;
+            color: #fff;
+        }
+        
+        a {
+            color: aliceblue;
+        }
+        
+        #introduction {
+            padding-top: 30px;
+            padding-left: 30px;
+            text-align: left;
+            line-height: 30px;
+            height: 130px;
+            background-color: #008272;
+            font-size: 20px;
+            color: #fff;
+        }
+        
+        #second {
+            text-align: center;
+        }
+        
+        #imageContainer {
+            padding: 30px 30px 30px 30px;
+        }
+        
+        .imageBorder {
+            border-style: 5px solid black;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll">
+    <div id="header">
+        <div id="headerlogo">
+            <a href="https://www.microsoft.com">_</a>
+        </div>
+        <div id="headertext">
+            <a href="/">毛毛&&豆豆</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>welcome to our site!</h1>
+        <div id="introduction">
+            <p>Choose a picture from anywhere, I can tell you what in the picture!</p>
+            <p id="second">Click choose the file to begin.</p>
+        </div>
+
+
+        <div id="imageContainer">
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" id="file">
+                <div id="image-wrap"></div>
+            </form>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary" />
+
+    </div>
+
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/image-file-visible.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            //图片显示插件
+            $.imageFileVisible({
+                wrapSelector: "#image-wrap",
+                fileSelector: "#file",
+                width: 'auto',
+                height: '400px'
+            });
+        });
+    </script>
+</body>
+
+</html>
